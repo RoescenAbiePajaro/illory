@@ -1,31 +1,61 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { trackClick } from "../../backend/utils/trackClick";
-import AnimatedBackground from "./AnimatedBackground";
 
 export default function HomePage() {
   const navigate = useNavigate();
-  const [selectedImage, setSelectedImage] = useState(null);
-  const [isLinkLoading, setIsLinkLoading] = useState(false);
-  const [isDownloadLoading, setIsDownloadLoading] = useState(false);
+  const [selectedBook, setSelectedBook] = useState(null);
+  const [currentPage, setCurrentPage] = useState(0);
 
-  const handleMenuClick = () => {
+  // Sample books data - in real app, this would come from your backend
+  const sampleBooks = [
+    {
+      id: 1,
+      title: "The Watercolor Journey",
+      author: "Jane Smith",
+      illustrator: "John Artist",
+      coverImage: "/covers/book1.jpg",
+      pages: ["/pages/book1-1.jpg", "/pages/book1-2.jpg", "/pages/book1-3.jpg"],
+      link: "https://example.com/book1"
+    }
+  ];
+
+  const handleAdminLogin = () => {
     navigate("/admin");
   };
 
-  const closeModal = () => setSelectedImage(null);
+  const openBook = (book) => {
+    setSelectedBook(book);
+    setCurrentPage(0);
+  };
+
+  const closeBook = () => {
+    setSelectedBook(null);
+    setCurrentPage(0);
+  };
+
+  const nextPage = () => {
+    if (selectedBook && currentPage < selectedBook.pages.length - 1) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const prevPage = () => {
+    if (currentPage > 0) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
-    <div className="min-h-screen bg-black flex flex-col relative">
-      <AnimatedBackground />
-      {/* Header Navigation */}
-      <header className="w-full bg-black border-b border-gray-800">
+    <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-blue-50">
+      {/* Header */}
+      <header className="w-full bg-white/80 backdrop-blur-sm border-b border-gray-200">
         <div className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <div className="w-20"></div>
-          <div className="flex-1 flex justify-center"></div>
+          <h1 className="text-2xl font-bold bg-gradient-to-r from-pink-400 to-purple-400 bg-clip-text text-transparent">
+            Ilory
+          </h1>
           <button
-            onClick={handleMenuClick}
-            className="bg-white text-black py-2 px-6 rounded-lg font-semibold text-sm hover:bg-gray-200 transition duration-200"
+            onClick={handleAdminLogin}
+            className="bg-gradient-to-r from-pink-300 to-purple-300 text-gray-800 py-2 px-6 rounded-xl font-semibold hover:from-pink-400 hover:to-purple-400 transition-all"
           >
             Admin Login
           </button>
@@ -33,135 +63,101 @@ export default function HomePage() {
       </header>
 
       {/* Main Content */}
-      <div className="flex-1 flex flex-col items-center justify-center p-6">
-        <div className="bg-black border border-gray-800 rounded-2xl p-8 w-full max-w-md text-center">
-          <div className="w-28 h-28 mx-auto mb-4">
-            <img
-              src="/icon/logo.webp"
-              srcSet="/icon/logo.png 1x, /icon/logo@2x.webp 2x"
-              alt="Beyond The Brush"
-              className="w-full h-full object-contain"
-              width="112"
-              height="112"
-              loading="lazy"
-            />
-          </div>
-
-          <h2 className="text-4xl text-white text-center mb-8">
-            Beyond The Brush
+      <div className="container mx-auto px-4 py-8">
+        <div className="text-center mb-12">
+          <h2 className="text-4xl font-bold text-gray-800 mb-4">
+            Discover Illustrated Story
           </h2>
-
-          <div className="flex flex-col space-y-4">
-            <button
-              className="w-full bg-pink-500 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-pink-600 transition duration-200 text-center no-underline disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={async (e) => {
-                e.preventDefault();
-                const url = "https://btblite.vercel.app";
-                setIsLinkLoading(true);
-                try {
-                  await trackClick("visit_link", "home_page");
-                  window.open(url, "_blank", "noopener,noreferrer");
-                } catch (error) {
-                  console.error("Error tracking click:", error);
-                  window.open(url, "_blank", "noopener,noreferrer");
-                } finally {
-                  setIsLinkLoading(false);
-                }
-              }}
-              disabled={isLinkLoading}
-            >
-              {isLinkLoading ? 'Opening...' : 'Visit Link'}
-            </button>
-
-            <button
-              className="w-full bg-blue-500 text-white py-3 px-6 rounded-lg font-semibold text-lg hover:bg-blue-600 transition duration-200 text-center no-underline disabled:opacity-50 disabled:cursor-not-allowed"
-              onClick={async (e) => {
-                e.preventDefault();
-                const url = "https://mega.nz/folder/NFVAnJSL#xdiixtFhQvP7t-McXYN_kw";
-                setIsDownloadLoading(true);
-                try {
-                  await trackClick("download", "home_page");
-                  window.open(url, "_blank", "noopener,noreferrer");
-                } catch (error) {
-                  console.error("Error tracking download:", error);
-                  window.open(url, "_blank", "noopener,noreferrer");
-                } finally {
-                  setIsDownloadLoading(false);
-                }
-              }}
-              disabled={isDownloadLoading}
-            >
-              {isDownloadLoading ? 'Preparing...' : 'Download PC'}
-            </button>
-          </div>
+          <p className="text-lg text-gray-600 max-w-2xl mx-auto">
+            Explore our collection of beautifully illustrated ebooks with watercolor pastel artwork
+          </p>
         </div>
 
-        {/* Images + Video Section */}
-        <div className="mt-16 w-full max-w-6xl px-4">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-start">
-            {/* Image 1 */}
-            <div className="flex flex-col items-center text-center">
-              <img
-                loading="lazy"
-                src="/1.jpg"
-                alt="Art Showcase"
-                className="w-64 h-40 rounded-2xl shadow-lg object-cover cursor-pointer hover:opacity-80 transition"
-                onClick={() =>
-                  setSelectedImage("/1.jpg")
-                }
-              />
-              <p className="text-gray-300 mt-3 text-sm max-w-xs">
-                A simple drawing web-app that allows users to draw, present ideas or key terms.
-              </p>
+        {/* Book Carousel */}
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8">
+          {sampleBooks.map((book) => (
+            <div 
+              key={book.id} 
+              className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 hover:shadow-md transition-all cursor-pointer group"
+              onClick={() => openBook(book)}
+            >
+              <div className="aspect-[970/1220] bg-gradient-to-br from-pink-100 to-purple-100 rounded-xl mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                {book.coverImage ? (
+                  <img 
+                    src={book.coverImage} 
+                    alt={book.title}
+                    className="w-full h-full object-cover rounded-xl"
+                  />
+                ) : (
+                  <div className="text-center text-gray-400">
+                    <div className="text-4xl mb-2">📚</div>
+                    <p className="text-sm">No Cover</p>
+                  </div>
+                )}
+              </div>
+              <h3 className="font-semibold text-gray-800 mb-2">{book.title}</h3>
+              <p className="text-sm text-gray-600">by {book.author}</p>
             </div>
-
-            {/* Image 2 */}
-            <div className="flex flex-col items-center text-center">
-              <img
-                loading="lazy"
-                src="/7faf63e8-ed37-4167-8bc3-8354acbdca5f.jpg"
-                alt="Art Collaboration"
-                className="w-64 h-40 rounded-2xl shadow-lg object-cover cursor-pointer hover:opacity-80 transition"
-                onClick={() => setSelectedImage("/7faf63e8-ed37-4167-8bc3-8354acbdca5f.jpg")}
-              />
-              <p className="text-gray-300 mt-3 text-sm max-w-xs">
-                Another example of drawing made in Beyond The Brush Lite.
-              </p>
-            </div>
-
-            {/* Video */}
-            <div className="flex flex-col items-center text-center">
-              <video
-                src="/Beyond The Brush 2025-09-14 15-04-56.mp4"
-                controls
-                className="w-64 h-40 rounded-2xl shadow-lg object-cover"
-              ></video>
-              <p className="text-gray-300 mt-3 text-sm max-w-xs">
-                A PC app that uses hand gesture controls also a  AI-driven digital painting using webcams allowing users to draw or present key ideas.
-              </p>
-            </div>
-          </div>
+          ))}
         </div>
       </div>
 
-      {/* Modal for image preview */}
-      {selectedImage && (
-        <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-          onClick={closeModal}
-        >
-          <div className="relative">
-            <img
-              src={selectedImage}
-              alt="Preview"
-              className="max-h-[80vh] max-w-[90vw] rounded-2xl shadow-lg"
-            />
-            <button
-              onClick={closeModal}
-              className="absolute -top-4 -right-4 bg-white text-black rounded-full px-3 py-1 font-bold text-lg shadow-lg hover:bg-gray-200"
-            >
-              ×
-            </button>
+      {/* Book Reader Modal */}
+      {selectedBook && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-hidden">
+            <div className="flex justify-between items-center p-6 border-b border-gray-200">
+              <h3 className="text-xl font-semibold text-gray-800">{selectedBook.title}</h3>
+              <button
+                onClick={closeBook}
+                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-100 transition-colors"
+              >
+                ×
+              </button>
+            </div>
+            
+            <div className="p-6 flex items-center justify-center">
+              <div className="relative">
+                <img
+                  src={selectedBook.pages[currentPage]}
+                  alt={`Page ${currentPage + 1}`}
+                  className="max-h-[70vh] max-w-full object-contain rounded-lg"
+                />
+                
+                {/* Navigation Arrows */}
+                <button
+                  onClick={prevPage}
+                  disabled={currentPage === 0}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white disabled:opacity-30 transition-all"
+                >
+                  ←
+                </button>
+                
+                <button
+                  onClick={nextPage}
+                  disabled={currentPage === selectedBook.pages.length - 1}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white disabled:opacity-30 transition-all"
+                >
+                  →
+                </button>
+              </div>
+            </div>
+            
+            <div className="p-6 border-t border-gray-200 flex justify-between items-center">
+              <span className="text-sm text-gray-600">
+                Page {currentPage + 1} of {selectedBook.pages.length}
+              </span>
+              {selectedBook.link && (
+                <a
+                  href={selectedBook.link}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-gradient-to-r from-pink-300 to-purple-300 text-gray-800 px-6 py-2 rounded-xl font-semibold hover:from-pink-400 hover:to-purple-400 transition-all"
+                >
+                  Visit Website
+                </a>
+              )}
+            </div>
           </div>
         </div>
       )}
