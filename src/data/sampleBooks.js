@@ -5,8 +5,8 @@ export const sampleBooks = [
     title: "When Silence Speaks",
     author: "Unknown",
     illustrator: "Unknown",
-    coverImage: "/covers/book1.jpg",
-    pages: ["/pages/book1-1.jpg", "/pages/book1-2.jpg"],
+    coverImage: "/icon/whensilencespeaks/front page (1).png",
+    pages: ["/icon/whensilencespeaks/3..png", "/icon/whensilencespeaks/4..png"],
     link: "https://example.com/book1"
   },
   {
