@@ -89,17 +89,6 @@ export default function HomePage() {
             Explore the collection of my illustrated ebooks 
           </p>
           
-          {/* Arrow Down Button */}
-          <button
-            onClick={scrollToDiscover}
-            className="mt-8 w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 mx-auto"
-            aria-label="Scroll to discover section"
-          >
-            <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-            </svg>
-          </button>
-          
           {/* Carousel - Cover Photo Style */}
           <div className="mt-8 relative w-full max-w-6xl mx-auto rounded-2xl overflow-hidden shadow-2xl">
             <div 
@@ -136,13 +125,13 @@ export default function HomePage() {
             {/* Optional: Previous/Next buttons for carousel */}
             <button
               onClick={() => goToSlide((currentSlide - 1 + coverImages.length) % coverImages.length)}
-              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-all duration-300"
+              className="absolute left-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-pink-50/80 backdrop-blur-sm rounded-full flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-all duration-300 shadow-md hover:shadow-lg"
             >
               ‹
             </button>
             <button
               onClick={() => goToSlide((currentSlide + 1) % coverImages.length)}
-              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-black/30 backdrop-blur-sm rounded-full flex items-center justify-center text-white hover:bg-black/50 transition-all duration-300"
+              className="absolute right-4 top-1/2 transform -translate-y-1/2 w-10 h-10 bg-pink-50/80 backdrop-blur-sm rounded-full flex items-center justify-center text-pink-600 hover:bg-pink-100 transition-all duration-300 shadow-md hover:shadow-lg"
             >
               ›
             </button>
@@ -165,10 +154,11 @@ export default function HomePage() {
             {currentBooks.map((book) => (
               <div 
                 key={book.id} 
-                className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700 hover:border-pink-500/50 hover:shadow-lg transition-all cursor-pointer group"
-                onClick={() => openBook(book)}
+                className="bg-gray-800 rounded-2xl p-6 shadow-sm border border-gray-700 hover:border-pink-500/50 hover:shadow-lg transition-all group"
               >
-                <div className="aspect-[970/1220] bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-4 flex items-center justify-center group-hover:scale-105 transition-transform">
+                <div className="aspect-[970/1220] bg-gradient-to-br from-gray-700 to-gray-800 rounded-xl mb-4 flex items-center justify-center group-hover:scale-105 transition-transform cursor-pointer"
+                  onClick={() => openBook(book)}
+                >
                   {book.coverImage ? (
                     <img 
                       src={book.coverImage} 
@@ -182,8 +172,39 @@ export default function HomePage() {
                     </div>
                   )}
                 </div>
-                <h3 className="font-semibold text-white mb-2">{book.title}</h3>
-                <p className="text-sm text-gray-400">by {book.author}</p>
+                
+                {/* Book Info and Buttons Container */}
+                <div className="flex flex-col space-y-3">
+                  <div className="flex-grow">
+                    <h3 className="font-semibold text-white mb-2">{book.title}</h3>
+                    <p className="text-sm text-gray-400">by {book.author}</p>
+                  </div>
+                  
+                  <div className="flex flex-col space-y-2">
+                    {/* View Picture Button */}
+                    <button
+                      onClick={() => openBook(book)}
+                      className="w-full bg-gradient-to-r from-pink-200 to-pink-300 text-pink-900 px-4 py-2 rounded-lg font-semibold hover:from-pink-300 hover:to-pink-400 transition-all duration-300 transform hover:scale-105"
+                    >
+                      View Picture
+                    </button>
+                    
+                    {/* Download PDF Button */}
+                    <a
+                      href={book.link || '#'}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full text-center px-4 py-2 rounded-lg font-medium transition-all duration-300 ${
+                        book.link 
+                          ? 'bg-gradient-to-r from-pink-50 to-pink-100 text-pink-900 hover:from-pink-100 hover:to-pink-200 hover:shadow-md hover:scale-105'
+                          : 'bg-pink-50 text-pink-300 cursor-not-allowed opacity-70'
+                      }`}
+                      onClick={(e) => !book.link && e.preventDefault()}
+                    >
+                      {book.link ? 'Download PDF' : 'PDF Not Available'}
+                    </a>
+                  </div>
+                </div>
               </div>
             ))}
           </div>
@@ -195,7 +216,7 @@ export default function HomePage() {
                 <button
                   onClick={() => paginate(currentBookPage > 1 ? currentBookPage - 1 : 1)}
                   disabled={currentBookPage === 1}
-                  className="px-4 py-2 border border-gray-700 rounded-l-lg bg-gray-800 text-gray-300 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 border border-pink-200/50 rounded-l-lg bg-gradient-to-r from-pink-50 to-pink-100 text-pink-900 hover:from-pink-100 hover:to-pink-200 hover:shadow-md transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Previous
                 </button>
@@ -210,7 +231,7 @@ export default function HomePage() {
                       <button
                         key={i}
                         onClick={() => paginate(i + 1)}
-                        className={`px-4 py-2 border-t border-b border-gray-700 ${currentBookPage === i + 1 ? 'bg-pink-600 text-white' : 'bg-gray-800 text-gray-300 hover:bg-gray-700'}`}
+                        className={`px-4 py-2 border-t border-b border-pink-200/50 ${currentBookPage === i + 1 ? 'bg-gradient-to-r from-pink-200 to-pink-300 text-pink-900 font-medium' : 'bg-white/90 text-pink-800 hover:bg-pink-50/80'} transition-all duration-200`}
                       >
                         {i + 1}
                       </button>
@@ -222,7 +243,7 @@ export default function HomePage() {
                 <button
                   onClick={() => paginate(currentBookPage < totalPages ? currentBookPage + 1 : totalPages)}
                   disabled={currentBookPage === totalPages}
-                  className="px-4 py-2 border border-gray-700 rounded-r-lg bg-gray-800 text-gray-300 hover:bg-gray-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  className="px-4 py-2 border border-gray-200/20 rounded-r-lg bg-gradient-to-r from-pink-100 to-pink-200 text-gray-800 hover:from-pink-100 hover:to-pink-200 hover:shadow-md transition-all duration-300 shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                 >
                   Next
                 </button>
@@ -235,7 +256,7 @@ export default function HomePage() {
       {/* Arrow Up Button */}
       <button
         onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
-        className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-pink-400 to-purple-400 rounded-full flex items-center justify-center shadow-lg hover:scale-110 transition-all duration-300 z-30"
+        className="fixed bottom-8 right-8 w-12 h-12 bg-gradient-to-r from-pink-300 to-pink-400 rounded-full flex items-center justify-center shadow-lg hover:scale-110 hover:shadow-xl transition-all duration-300 z-30"
         aria-label="Scroll to top"
       >
         <svg className="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -251,7 +272,7 @@ export default function HomePage() {
               <h3 className="text-xl font-semibold text-white">{selectedBook.title}</h3>
               <button
                 onClick={closeBook}
-                className="w-8 h-8 flex items-center justify-center rounded-full hover:bg-gray-800 text-gray-400 hover:text-white transition-colors"
+                className="w-8 h-8 flex items-center justify-center rounded-full bg-pink-50/80 backdrop-blur-sm hover:bg-pink-100 text-pink-600 hover:text-pink-700 transition-colors"
               >
                 ×
               </button>
@@ -269,7 +290,7 @@ export default function HomePage() {
                 <button
                   onClick={prevPage}
                   disabled={currentPage === 0}
-                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white disabled:opacity-30 transition-all"
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-pink-50/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-pink-100 hover:shadow-xl disabled:opacity-30 transition-all duration-300 text-pink-500 hover:text-pink-600"
                 >
                   ←
                 </button>
@@ -277,27 +298,26 @@ export default function HomePage() {
                 <button
                   onClick={nextPage}
                   disabled={currentPage === selectedBook.pages.length - 1}
-                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/80 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white disabled:opacity-30 transition-all"
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 w-12 h-12 bg-white/90 backdrop-blur-sm rounded-full flex items-center justify-center shadow-lg hover:bg-white hover:shadow-xl disabled:opacity-30 transition-all duration-300 text-pink-400 hover:text-pink-500"
                 >
                   →
                 </button>
               </div>
             </div>
             
-            <div className="p-6 border-t border-gray-200 flex justify-between items-center">
-              <span className="text-sm text-gray-600">
+            <div className="p-6 border-t border-gray-800 flex flex-col sm:flex-row justify-between items-center gap-4">
+              <span className="text-sm text-gray-400">
                 Page {currentPage + 1} of {selectedBook.pages.length}
               </span>
-              {selectedBook.link && (
-                <a
-                  href={selectedBook.link}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-gradient-to-r from-pink-300 to-purple-300 text-gray-800 px-6 py-2 rounded-xl font-semibold hover:from-pink-400 hover:to-purple-400 transition-all"
-                >
-                  Download pdf
-                </a>
-              )}
+              <a
+                href={selectedBook.link || '#'}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={`bg-gradient-to-r from-pink-100 to-pink-200 text-pink-900 px-6 py-2 rounded-xl font-medium hover:from-pink-200 hover:to-pink-300 hover:shadow-md transition-all duration-300 ${!selectedBook.link ? 'opacity-50 cursor-not-allowed' : 'hover:scale-105'}`}
+                onClick={(e) => !selectedBook.link && e.preventDefault()}
+              >
+                {selectedBook.link ? 'Download PDF' : 'PDF Not Available'}
+              </a>
             </div>
           </div>
         </div>
